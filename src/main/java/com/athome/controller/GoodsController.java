@@ -21,16 +21,18 @@ public class GoodsController {
 
     @GetMapping("buy")
     public String buy() {
-        String s = stringRedisTemplate.opsForValue().get("goods:001");
-        int result = s == null ? 0 : Integer.parseInt(s);
-        if (result > 0) {
-            int i = result - 1;
-            stringRedisTemplate.opsForValue().set("goods:001", String.valueOf(i));
-            System.out.println("商品剩余：+" + i + "  服务端口" + serverPort);
-            return "商品剩余：+" + i + "  服务端口" + serverPort;
-        } else {
-            System.out.println("商品已经售罄" + serverPort);
-            return "商品已经售罄";
+        synchronized (this) {
+            String s = stringRedisTemplate.opsForValue().get("goods:001");
+            int result = s == null ? 0 : Integer.parseInt(s);
+            if (result > 0) {
+                int i = result - 1;
+                stringRedisTemplate.opsForValue().set("goods:001", String.valueOf(i));
+                System.out.println("商品剩余：+" + i + "  服务端口" + serverPort);
+                return "商品剩余：+" + i + "  服务端口" + serverPort;
+            } else {
+                System.out.println("商品已经售罄" + serverPort);
+                return "商品已经售罄";
+            }
         }
 
     }
