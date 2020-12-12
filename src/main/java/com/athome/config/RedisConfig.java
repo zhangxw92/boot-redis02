@@ -1,5 +1,7 @@
 package com.athome.config;
 
+import org.redisson.Redisson;
+import org.redisson.config.Config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
@@ -26,6 +28,13 @@ public class RedisConfig {
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
         return redisTemplate;
+    }
+
+    @Bean
+    public Redisson getRedssion() {
+        Config config = new Config();
+        config.useSingleServer().setAddress("redis://39.102.61.252:6379").setDatabase(0);
+        return (Redisson) Redisson.create(config);
     }
 
 }
