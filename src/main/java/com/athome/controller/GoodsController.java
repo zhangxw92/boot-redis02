@@ -23,15 +23,15 @@ import java.util.concurrent.TimeUnit;
 public class GoodsController {
 
     @Autowired
-    private StringRedisTemplate stringRedisTemplate;
-    @Value("${server.port}")
-    private String serverPort;
-    private static final String REDIS_LOCK = "redisLock";
-    @Autowired
-    private Redisson redisson;
+//    private StringRedisTemplate stringRedisTemplate;
+//    @Value("${server.port}")
+//    private String serverPort;
+//    private static final String REDIS_LOCK = "redisLock";
+//    @Autowired
+//    private Redisson redisson;
 
     @GetMapping("buy")
-    public String buy() {
+    public void buy() {
 
         //如果只设置了setnx，程序走到第36行，部署应用的程序down机了，
         // 那么将无法释放rdis中存入的key，因此需要对这个key设置一个过期时间
@@ -48,7 +48,7 @@ public class GoodsController {
 //            return "抢锁失败";
 //        }
 
-        RLock lock = redisson.getLock(REDIS_LOCK);
+      /*  RLock lock = redisson.getLock(REDIS_LOCK);
         lock.lock();
         try {
             //synchronized (this) {
@@ -95,7 +95,7 @@ public class GoodsController {
                 lock.unlock();
             }
         }
-
+*/
         //以上这种方式实现分布式锁还存在的两个问题：
         //1、如何保证设置的redis key的过期时间大于业务的处理时间，需要一个缓存续命机制，待思考！
         //2、在集群环境下，因为redis保证的是高可用和分区容错性，并不能保证数据强一致性，因此会出现数据丢失的情况，

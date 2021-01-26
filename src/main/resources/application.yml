@@ -17,4 +17,17 @@ spring:
         max-idle: 8
         #?????????С????????????????0
         min-idle: 0
+  kafka:
+    bootstrap-servers: 10.2.3.150:9092
+    producer:
+      retries: 0
+      acks: 0
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      group-id: user
+      enable-auto-commit: true
+      auto-commit-interval: 100
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
 
