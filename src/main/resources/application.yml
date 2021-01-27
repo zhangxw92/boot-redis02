@@ -20,14 +20,14 @@ spring:
   kafka:
     bootstrap-servers: 10.2.3.150:9092
     producer:
-      retries: 0
-      acks: 0
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      retries: 0 #重试次数
+      acks: 0 #往集群发消息，不需要等待集群响应，可以接着发下一条，安全性最低；1 Leader响应；all leader follower都要响应
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer #发消息签必须序列化
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
     consumer:
-      group-id: user
-      enable-auto-commit: true
+      group-id: user #配置消费者组
+      enable-auto-commit: false #配置是否自动提交
       auto-commit-interval: 100
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer #反序列化
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
 

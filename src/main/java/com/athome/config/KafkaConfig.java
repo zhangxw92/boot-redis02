@@ -4,8 +4,11 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
+import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.listener.ContainerProperties;
 
 import java.util.HashMap;
 
@@ -32,8 +35,19 @@ public class KafkaConfig {
         configs.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, keySerializer);
         configs.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, valueSerializer);
         DefaultKafkaProducerFactory producerFactory = new DefaultKafkaProducerFactory(configs);
-        return new KafkaTemplate(producerFactory);
+        return new KafkaTemplate<String, String>(producerFactory);
+    }
 
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory factory(ConsumerFactory consumerFactory) {
+        ConcurrentKafkaListenerContainerFactory concurrentKafkaListenerContainerFactory =
+                new ConcurrentKafkaListenerContainerFactory();
+        concurrentKafkaListenerContainerFactory.setConcurrency(10);
+        //concurrentKafkaListenerContainerFactory.setBatchListener(true);
+        concurrentKafkaListenerContainerFactory.getContainerProperties().setPollTimeout(1000);
+        concurrentKafkaListenerContainerFactory.setConsumerFactory(consumerFactory);
+        concurrentKafkaListenerContainerFactory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL_IMMEDIATE);
 
+        return concurrentKafkaListenerContainerFactory;
     }
 }
